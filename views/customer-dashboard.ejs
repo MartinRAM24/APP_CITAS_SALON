@@ -1,0 +1,54 @@
+<%- include('partials/header') %>
+<%- include('partials/flash') %>
+<h2>Hola <%= user.fullName %>, agenda tu cita</h2>
+
+<div class="grid">
+  <section class="card">
+    <h3>Agendar nueva cita</h3>
+    <form action="/citas" method="POST">
+      <label>Servicio</label>
+      <select name="serviceId" required>
+        <option value="">Selecciona un servicio</option>
+        <% services.forEach(service => { %>
+          <option value="<%= service.id %>"><%= service.area %> - <%= service.name %> ($<%= service.price %>)</option>
+        <% }) %>
+      </select>
+      <label>Fecha y hora</label>
+      <input name="startsAt" type="datetime-local" required />
+      <label>Notas</label>
+      <textarea name="notes" rows="3" placeholder="Preferencias o comentarios"></textarea>
+      <button type="submit">Agendar</button>
+    </form>
+  </section>
+
+  <section class="card">
+    <h3>Tu próxima cita</h3>
+    <% if (nextAppointment) { %>
+      <p><strong><%= nextAppointment.service.name %></strong> (<%= nextAppointment.service.area %>)</p>
+      <p><%= new Date(nextAppointment.startsAt).toLocaleString('es-MX') %></p>
+      <p class="small">Estado: <%= nextAppointment.status %></p>
+    <% } else { %>
+      <p>Aún no tienes una cita programada.</p>
+    <% } %>
+  </section>
+</div>
+
+<section class="card">
+  <h3>Historial y próximas citas</h3>
+  <table>
+    <thead>
+      <tr><th>Fecha</th><th>Servicio</th><th>Estado</th><th>Notas</th></tr>
+    </thead>
+    <tbody>
+      <% appointments.forEach(app => { %>
+        <tr>
+          <td><%= new Date(app.startsAt).toLocaleString('es-MX') %></td>
+          <td><%= app.service.area %> - <%= app.service.name %></td>
+          <td><%= app.status %></td>
+          <td><%= app.notes || '-' %></td>
+        </tr>
+      <% }) %>
+    </tbody>
+  </table>
+</section>
+<%- include('partials/footer') %>
