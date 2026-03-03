@@ -1,0 +1,14 @@
+<%- include('partials/header') %>
+<div class="card" style="max-width:460px;margin:auto;">
+  <h2>Iniciar sesión</h2>
+  <%- include('partials/flash') %>
+  <form action="/login" method="POST">
+    <label>Email</label>
+    <input name="email" type="email" required />
+    <label>Contraseña</label>
+    <input name="password" type="password" required />
+    <button type="submit">Entrar</button>
+  </form>
+  <p class="small">¿No tienes cuenta? <a href="/registro">Regístrate aquí</a></p>
+</div>
+<%- include('partials/footer') %>
