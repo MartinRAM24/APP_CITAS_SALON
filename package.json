@@ -9,7 +9,8 @@
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev --name init",
     "prisma:deploy": "prisma migrate deploy",
-    "prisma:seed": "node prisma/seed.js"
+    "prisma:seed": "node prisma/seed.js",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@prisma/client": "^5.20.0",
@@ -21,9 +22,7 @@
     "express": "^4.21.0",
     "express-session": "^1.18.0",
     "method-override": "^3.0.0",
-    "pg": "^8.13.0"
-  },
-  "devDependencies": {
+    "pg": "^8.13.0",
     "prisma": "^5.20.0"
   }
 }

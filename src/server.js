@@ -1,5 +1,6 @@
 require('dotenv').config();
 const path = require('path');
+const { execSync } = require('child_process');
 const express = require('express');
 const session = require('express-session');
 const pgSession = require('connect-pg-simple')(session);
@@ -9,9 +10,30 @@ const bcrypt = require('bcryptjs');
 const { Pool } = require('pg');
 const { PrismaClient, Role } = require('@prisma/client');
 
+function normalizeDatabaseUrl(rawUrl) {
+  if (!rawUrl) {
+    return rawUrl;
+  }
+
+  const parsed = new URL(rawUrl);
+  const sslMode = parsed.searchParams.get('sslmode');
+  const hasLibpqCompat = parsed.searchParams.has('uselibpqcompat');
+
+  if (sslMode === 'require' && !hasLibpqCompat) {
+    parsed.searchParams.set('uselibpqcompat', 'true');
+  }
+
+  return parsed.toString();
+}
+
+if (process.env.DATABASE_URL) {
+  process.env.DATABASE_URL = normalizeDatabaseUrl(process.env.DATABASE_URL);
+}
+
 const prisma = new PrismaClient();
 const app = express();
 const PORT = process.env.PORT || 3000;
+const isProduction = process.env.NODE_ENV === 'production';
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, '..', 'views'));
@@ -21,11 +43,11 @@ app.use(express.json());
 app.use(methodOverride('_method'));
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
-const isProduction = process.env.NODE_ENV === 'production';
 const pgPool = new Pool({
   connectionString: process.env.DATABASE_URL,
   ssl: isProduction ? { rejectUnauthorized: false } : false,
 });
+
 app.use(
   session({
     store: new pgSession({
@@ -225,6 +247,29 @@ app.delete('/admin/citas/:id', requireAdmin, async (req, res) => {
   return res.redirect('/admin');
 });
 
-app.listen(PORT, () => {
-  console.log(`Servidor iniciado en http://localhost:${PORT}`);
-});
+function runMigrationsIfNeeded() {
+  const shouldRunMigrations = process.env.RUN_MIGRATIONS_ON_STARTUP !== 'false';
+
+  if (!shouldRunMigrations) {
+    console.log('RUN_MIGRATIONS_ON_STARTUP=false, se omite prisma migrate deploy.');
+    return;
+  }
+
+  console.log('Ejecutando prisma migrate deploy...');
+  execSync('npx prisma migrate deploy', { stdio: 'inherit' });
+}
+
+async function bootstrap() {
+  try {
+    runMigrationsIfNeeded();
+    await prisma.$connect();
+    app.listen(PORT, () => {
+      console.log(`Servidor iniciado en http://localhost:${PORT}`);
+    });
+  } catch (error) {
+    console.error('No se pudo iniciar la aplicación:', error);
+    process.exit(1);
+  }
+}
+
+bootstrap();

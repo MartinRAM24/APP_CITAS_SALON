@@ -40,10 +40,13 @@ Sistema web para un local de belleza que permite:
    - `SESSION_SECRET`
    - `ADMIN_EMAIL`
    - `ADMIN_PASSWORD`
+   - `RUN_MIGRATIONS_ON_STARTUP=true`
 3. Configura comandos:
-   - Build: `npm install && npm run prisma:generate`
-   - Start: `npm run prisma:deploy && npm start`
+   - Build: `npm install`
+   - Start: `npm start`
 4. Deploy.
+
+> Al iniciar, la app ejecuta `prisma migrate deploy` automáticamente para evitar el error `P2021: table does not exist` cuando la base está vacía.
 
 ## Credenciales admin inicial
 Se crean por `npm run prisma:seed` usando:
@@ -55,3 +58,14 @@ Se crean por `npm run prisma:seed` usando:
 - `/login` inicio de sesión
 - `/cliente` dashboard cliente
 - `/admin` dashboard dueña
+
+## Troubleshooting de deploy
+### Warning SSL `pg-connection-string`
+Si tu `DATABASE_URL` usa `sslmode=require`, la app añade automáticamente `uselibpqcompat=true` para compatibilidad con el warning de `pg` v8/v9.
+
+### Error `P2021 The table public.User does not exist`
+Este repo ya incluye migración inicial en `prisma/migrations` y la ejecuta al iniciar.
+Si quieres forzarlo manualmente:
+```bash
+npx prisma migrate deploy
+```
