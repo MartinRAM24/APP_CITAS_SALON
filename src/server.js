@@ -21,10 +21,18 @@ app.use(express.json());
 app.use(methodOverride('_method'));
 app.use(express.static(path.join(__dirname, '..', 'public')));
 
-const pgPool = new Pool({ connectionString: process.env.DATABASE_URL });
+const isProduction = process.env.NODE_ENV === 'production';
+const pgPool = new Pool({
+  connectionString: process.env.DATABASE_URL,
+  ssl: isProduction ? { rejectUnauthorized: false } : false,
+});
 app.use(
   session({
-    store: new pgSession({ pool: pgPool, tableName: 'user_sessions' }),
+    store: new pgSession({
+      pool: pgPool,
+      tableName: 'user_sessions',
+      createTableIfMissing: true,
+    }),
     secret: process.env.SESSION_SECRET || 'secret-key-change-me',
     resave: false,
     saveUninitialized: false,
