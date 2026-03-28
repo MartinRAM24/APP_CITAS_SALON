@@ -1,0 +1,28 @@
+<%- include('partials/header') %>
+<div style="max-width:540px;margin:60px auto;padding:0 1rem;">
+  <h2 style="text-align:center;margin-bottom:8px;">Bienvenido</h2>
+  <p style="text-align:center;color:#6b7280;margin-bottom:40px;">¿A qué negocio deseas acceder?</p>
+
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:20px;">
+
+    <a href="/negocio/salon" style="text-decoration:none;">
+      <div class="card" style="text-align:center;cursor:pointer;border:2px solid transparent;transition:border .2s;"
+           onmouseover="this.style.borderColor='#c084fc'" onmouseout="this.style.borderColor='transparent'">
+        <div style="font-size:3rem;margin-bottom:12px;">💅</div>
+        <h3 style="margin:0 0 6px;color:#7c3aed;">Salón de Belleza</h3>
+        <p style="margin:0;font-size:.875rem;color:#6b7280;">Cortes, tintes, manicure y más</p>
+      </div>
+    </a>
+
+    <a href="/negocio/podologo" style="text-decoration:none;">
+      <div class="card" style="text-align:center;cursor:pointer;border:2px solid transparent;transition:border .2s;"
+           onmouseover="this.style.borderColor='#34d399'" onmouseout="this.style.borderColor='transparent'">
+        <div style="font-size:3rem;margin-bottom:12px;">🦶</div>
+        <h3 style="margin:0 0 6px;color:#059669;">Podólogo</h3>
+        <p style="margin:0;font-size:.875rem;color:#6b7280;">Cuidado especializado de pies</p>
+      </div>
+    </a>
+
+  </div>
+</div>
+<%- include('partials/footer') %>

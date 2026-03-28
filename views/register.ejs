@@ -1,6 +1,16 @@
 <%- include('partials/header') %>
 <div class="card" style="max-width:460px;margin:auto;">
-  <h2>Registro de cliente</h2>
+  <% if (tenant) { %>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;">
+      <span style="font-size:1.8rem;"><%= tenant.emoji %></span>
+      <div>
+        <div style="font-size:.75rem;color:#6b7280;text-transform:uppercase;letter-spacing:.05em;">Registro en</div>
+        <div style="font-weight:600;color:<%= tenant.color %>"><%= tenant.nombre %></div>
+      </div>
+    </div>
+  <% } %>
+
+  <h2>Crear cuenta</h2>
   <%- include('partials/flash') %>
   <form action="/registro" method="POST">
     <label>Nombre completo</label>
@@ -12,5 +22,6 @@
     <button type="submit">Crear cuenta</button>
   </form>
   <p class="small">¿Ya tienes cuenta? <a href="/login">Inicia sesión</a></p>
+  <p class="small"><a href="/">← Cambiar negocio</a></p>
 </div>
 <%- include('partials/footer') %>

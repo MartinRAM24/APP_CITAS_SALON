@@ -12,14 +12,24 @@ enum Role {
   ADMIN
 }
 
+// Tenants disponibles en la app
+enum Tenant {
+  salon
+  podologo
+}
+
 model User {
   id           Int           @id @default(autoincrement())
   fullName     String
-  email        String        @unique
+  email        String
   passwordHash String
   role         Role          @default(CLIENT)
+  tenant       Tenant
   createdAt    DateTime      @default(now())
   appointments Appointment[]
+
+  // El email es único POR tenant
+  @@unique([email, tenant])
 }
 
 model Service {
@@ -28,6 +38,7 @@ model Service {
   area         String
   durationMins Int
   price        Decimal       @db.Decimal(10, 2)
+  tenant       Tenant
   createdAt    DateTime      @default(now())
   appointments Appointment[]
 }
@@ -36,6 +47,7 @@ model Appointment {
   id          Int      @id @default(autoincrement())
   customerId  Int
   serviceId   Int
+  tenant      Tenant
   startsAt    DateTime
   notes       String?
   status      String   @default("PROGRAMADA")
@@ -47,4 +59,5 @@ model Appointment {
 
   @@unique([serviceId, startsAt])
   @@index([customerId, startsAt])
+  @@index([tenant, startsAt])
 }

@@ -3,16 +3,25 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Salón - Citas</title>
+  <title><%= tenant ? tenant.nombre + ' - Citas' : 'Gestión de Citas' %></title>
   <link rel="stylesheet" href="/styles.css" />
 </head>
 <body>
 <header>
-  <strong>✨ Gestión de Citas - Salón</strong>
-  <% if (user) { %>
-    <form action="/logout" method="POST" class="inline">
-      <button type="submit">Cerrar sesión</button>
-    </form>
-  <% } %>
+  <strong>
+    <% if (tenant) { %>
+      <%= tenant.emoji %> <%= tenant.nombre %>
+    <% } else { %>
+      ✨ Gestión de Citas
+    <% } %>
+  </strong>
+  <div style="display:flex;align-items:center;gap:12px;">
+    <% if (user) { %>
+      <span style="font-size:.85rem;opacity:.8;">Hola, <%= user.fullName.split(' ')[0] %></span>
+      <form action="/logout" method="POST" class="inline">
+        <button type="submit">Cerrar sesión</button>
+      </form>
+    <% } %>
+  </div>
 </header>
 <main>

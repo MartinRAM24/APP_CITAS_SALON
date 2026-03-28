@@ -1,71 +1,46 @@
-# APP CITAS SALÓN (Railway + Neon Postgres)
+# App de Citas — Multi-tenant (Salón + Podólogo)
 
-Sistema web para un local de belleza que permite:
-- Registro e inicio de sesión de clientes.
-- Agenda de citas por hora con selección de servicio/área.
-- Panel de administradora para crear, revisar, modificar y eliminar citas.
-- Vista de próxima cita del cliente.
-- Notificación para dueña con últimas citas agendadas.
+Una sola aplicación, dos negocios completamente independientes.
 
-## Stack
-- Node.js + Express + EJS
-- Prisma ORM
-- Neon Postgres
-- Deploy pensado para Railway
+## Negocios disponibles
+| Tenant | Clave | Admin por defecto |
+|--------|-------|-------------------|
+| Salón de Belleza | `salon` | `SALON_ADMIN_EMAIL` |
+| Podólogo | `podologo` | `POD_ADMIN_EMAIL` |
 
-## Configuración local
-1. Instala dependencias:
-   ```bash
-   npm install
-   ```
-2. Copia variables:
-   ```bash
-   cp .env.example .env
-   ```
-3. Coloca tu `DATABASE_URL` de Neon en `.env`.
-4. Ejecuta migraciones y seed:
-   ```bash
-   npm run prisma:migrate
-   npm run prisma:seed
-   ```
-5. Inicia la app:
-   ```bash
-   npm run dev
-   ```
+## Flujo del usuario
+1. El cliente entra a la URL raíz `/`
+2. Elige el negocio (salón o podólogo)
+3. Inicia sesión o se registra **dentro de ese negocio**
+4. Sus datos y citas son completamente privados al negocio elegido
 
-## Deploy en Railway
-1. Crea proyecto en Railway y conecta este repositorio.
-2. En Variables agrega:
-   - `DATABASE_URL` (Neon)
-   - `SESSION_SECRET`
-   - `ADMIN_EMAIL`
-   - `ADMIN_PASSWORD`
-   - `RUN_MIGRATIONS_ON_STARTUP=true`
-3. Configura comandos:
-   - Build: `npm install`
-   - Start: `npm start`
-4. Deploy.
+## Seguridad multi-tenant
+- Un usuario del salón **no puede** iniciar sesión en el podólogo y viceversa
+- El email puede repetirse entre negocios (son cuentas independientes)
+- Todas las consultas a la base de datos filtran por `tenant`
+- Al crear citas se verifica que el servicio pertenezca al tenant correcto
 
-> Al iniciar, la app ejecuta `prisma migrate deploy` automáticamente para evitar el error `P2021: table does not exist` cuando la base está vacía.
+## Variables de entorno requeridas
+Ver `.env.example`
 
-## Credenciales admin inicial
-Se crean por `npm run prisma:seed` usando:
-- `ADMIN_EMAIL`
-- `ADMIN_PASSWORD`
+## Comandos
 
-## Rutas principales
-- `/registro` cliente se registra
-- `/login` inicio de sesión
-- `/cliente` dashboard cliente
-- `/admin` dashboard dueña
-
-## Troubleshooting de deploy
-### Warning SSL `pg-connection-string`
-Si tu `DATABASE_URL` usa `sslmode=require`, la app añade automáticamente `uselibpqcompat=true` para compatibilidad con el warning de `pg` v8/v9.
-
-### Error `P2021 The table public.User does not exist`
-Este repo ya incluye migración inicial en `prisma/migrations` y la ejecuta al iniciar.
-Si quieres forzarlo manualmente:
 ```bash
+# Instalar dependencias
+npm install
+
+# Correr la migración en producción
 npx prisma migrate deploy
+
+# Poblar la base de datos (admins + servicios de ambos negocios)
+node prisma/seed.js
+
+# Desarrollo local
+npm run dev
 ```
+
+## Agregar un tercer negocio en el futuro
+1. Agregar el nuevo valor al enum `Tenant` en `prisma/schema.prisma`
+2. Crear una nueva migración: `npx prisma migrate dev --name add_nuevo_negocio`
+3. Agregar el tenant al objeto `TENANTS` en `src/server.js`
+4. Agregar sus servicios en `prisma/seed.js`
