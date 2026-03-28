@@ -5,74 +5,120 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Panel Admin</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            elegantPurple: '#7e57c2',
+            podGreen: '#10b981',
+          }
+        }
+      }
+    }
+  </script>
 </head>
 <body class="min-h-screen bg-gradient-to-br from-purple-100 to-pink-100">
   <main class="max-w-7xl mx-auto p-6">
-    <header class="flex justify-between items-center">
-      <h1 class="text-3xl font-bold text-purple-800">Panel Administrador</h1>
-      <button id="logoutAdmin" class="bg-purple-700 text-white px-4 py-2 rounded">Cerrar sesión</button>
+
+    <!-- HEADER dinámico según tenant -->
+    <header class="flex flex-wrap justify-between items-center gap-3 mb-6">
+      <div class="flex items-center gap-3">
+        <span id="tenantEmoji" class="text-3xl"></span>
+        <div>
+          <p id="tenantLabel" class="text-xs uppercase tracking-widest font-medium opacity-60"></p>
+          <h1 id="pageTitle" class="text-2xl font-bold"></h1>
+        </div>
+      </div>
+      <div class="flex items-center gap-3">
+        <span id="adminBadge" class="text-xs px-2 py-1 rounded-full font-medium"></span>
+        <button id="logoutAdmin" class="text-white px-4 py-2 rounded text-sm hover:opacity-90 transition">Cerrar sesión</button>
+      </div>
     </header>
 
-    <section class="mt-4 bg-white rounded-xl p-5 shadow">
-      <h2 class="font-semibold text-lg">Siguiente cita</h2>
-      <p id="adminNext">Cargando...</p>
-      <p class="text-sm mt-1">Citas del día: <span id="adminTodayCount">0</span></p>
+    <!-- RESUMEN -->
+    <section id="summaryCard" class="rounded-xl p-5 shadow mb-6">
+      <h2 class="font-semibold text-lg mb-1">Siguiente cita</h2>
+      <p id="adminNext" class="text-slate-700">Cargando...</p>
+      <p class="text-sm mt-1 text-slate-500">Citas del día: <span id="adminTodayCount" class="font-semibold">0</span></p>
     </section>
 
-    <section class="grid lg:grid-cols-3 gap-5 mt-6">
+    <!-- FORMULARIOS -->
+    <section class="grid lg:grid-cols-3 gap-5 mb-6">
+
+      <!-- Crear cita manual -->
       <article class="bg-white rounded-xl p-4 shadow">
-        <h3 class="font-semibold">Crear cita manual</h3>
-        <form id="manualForm" class="space-y-2 mt-2 text-sm">
-          <label class="block">
-            <span class="text-slate-700">Cliente</span>
-            <input id="clientSearch" list="clientMatches" placeholder="Escribe nombre, email o teléfono" class="w-full border rounded p-2" required>
-          </label>
-          <datalist id="clientMatches"></datalist>
-                    <label class="block">
-            <span class="text-slate-700">Servicio</span>
+        <h3 class="font-semibold mb-3">Crear cita manual</h3>
+        <form id="manualForm" class="space-y-2 text-sm">
+          <div>
+            <label class="text-slate-500 text-xs mb-1 block">Cliente</label>
+            <input id="clientSearch" list="clientMatches" placeholder="Nombre, email o teléfono"
+              class="w-full border rounded p-2" required>
+            <datalist id="clientMatches"></datalist>
+          </div>
+          <div>
+            <label class="text-slate-500 text-xs mb-1 block">Servicio</label>
             <select id="servicioId" class="w-full border rounded p-2" required>
               <option value="">Selecciona un servicio</option>
             </select>
-          </label>
-
+          </div>
           <input id="manualFecha" type="date" class="w-full border rounded p-2" required>
           <input id="manualHora" type="time" class="w-full border rounded p-2" required>
-          <button class="bg-purple-700 text-white px-3 py-2 rounded w-full">Crear cita</button>
+          <button id="crearCitaBtn" class="text-white px-3 py-2 rounded w-full hover:opacity-90 transition">Crear cita</button>
         </form>
       </article>
 
+      <!-- Crear servicio -->
       <article class="bg-white rounded-xl p-4 shadow">
-        <h3 class="font-semibold">Crear servicio</h3>
-        <form id="serviceForm" class="space-y-2 mt-2 text-sm">
-          <input id="nombreServicio" placeholder="Nombre" class="w-full border rounded p-2" required>
-          <input id="duracionServicio" type="number" placeholder="Duración (min)" class="w-full border rounded p-2" required>
+        <h3 class="font-semibold mb-3">Agregar servicio</h3>
+        <form id="serviceForm" class="space-y-2 text-sm">
+          <input id="nombreServicio" placeholder="Nombre del servicio" class="w-full border rounded p-2" required>
+          <input id="duracionServicio" type="number" placeholder="Duración (minutos)" class="w-full border rounded p-2" required>
           <input id="precioServicio" type="number" step="0.01" placeholder="Precio" class="w-full border rounded p-2" required>
-          <button class="bg-pink-400 text-white px-3 py-2 rounded w-full">Guardar servicio</button>
+          <button class="bg-pink-400 text-white px-3 py-2 rounded w-full hover:opacity-90 transition">Guardar servicio</button>
         </form>
+        <p id="serviceMsg" class="mt-2 text-xs font-medium"></p>
       </article>
 
+      <!-- Editar servicio -->
       <article class="bg-white rounded-xl p-4 shadow">
-        <h3 class="font-semibold">Editar servicio</h3>
-        <form id="editServiceForm" class="space-y-2 mt-2 text-sm">
-          <input id="editServiceId" type="number" placeholder="ID servicio" class="w-full border rounded p-2" required>
-          <input id="editNombre" placeholder="Nuevo nombre" class="w-full border rounded p-2">
-          <input id="editDuracion" type="number" placeholder="Nueva duración" class="w-full border rounded p-2">
-          <input id="editPrecio" type="number" step="0.01" placeholder="Nuevo precio" class="w-full border rounded p-2">
-          <button class="bg-blue-500 text-white px-3 py-2 rounded w-full">Actualizar</button>
+        <h3 class="font-semibold mb-3">Editar servicio</h3>
+        <form id="editServiceForm" class="space-y-2 text-sm">
+          <input id="editServiceId" type="number" placeholder="ID del servicio" class="w-full border rounded p-2" required>
+          <input id="editNombre" placeholder="Nuevo nombre (opcional)" class="w-full border rounded p-2">
+          <input id="editDuracion" type="number" placeholder="Nueva duración (opcional)" class="w-full border rounded p-2">
+          <input id="editPrecio" type="number" step="0.01" placeholder="Nuevo precio (opcional)" class="w-full border rounded p-2">
+          <button class="bg-blue-500 text-white px-3 py-2 rounded w-full hover:opacity-90 transition">Actualizar</button>
         </form>
+        <p id="editServiceMsg" class="mt-2 text-xs font-medium"></p>
       </article>
+
     </section>
 
-    <section class="mt-6 bg-white rounded-xl p-5 shadow">
+    <!-- TABLA DE CITAS -->
+    <section class="bg-white rounded-xl p-5 shadow">
       <h2 class="text-xl font-semibold mb-3">Todas las citas</h2>
       <div class="overflow-auto">
         <table class="w-full text-sm">
-          <thead><tr class="border-b"><th>ID</th><th>Cliente</th><th>Servicio</th><th>Fecha</th><th>Hora</th><th>Estado</th><th>Acción</th></tr></thead>
-          <tbody id="adminAppointments"></tbody>
+          <thead>
+            <tr class="border-b text-left text-slate-500">
+              <th class="pb-2">ID</th>
+              <th class="pb-2">Cliente</th>
+              <th class="pb-2">Servicio</th>
+              <th class="pb-2">Fecha</th>
+              <th class="pb-2">Hora</th>
+              <th class="pb-2">Estado</th>
+              <th class="pb-2">Acción</th>
+            </tr>
+          </thead>
+          <tbody id="adminAppointments">
+            <tr><td colspan="7" class="py-4 text-center text-slate-400">Cargando...</td></tr>
+          </tbody>
         </table>
       </div>
-      <p id="adminMsg" class="mt-2 text-sm"></p>
+      <p id="adminMsg" class="mt-3 text-sm font-medium"></p>
     </section>
+
   </main>
   <script src="/static/admin.js"></script>
 </body>
