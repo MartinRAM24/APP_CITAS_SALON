@@ -16,6 +16,7 @@ const TENANTS = {
   },
 };
 
+
 let tenantActivo = null;
 const msg = document.getElementById('message');
 
