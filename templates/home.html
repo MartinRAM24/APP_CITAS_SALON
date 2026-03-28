@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title id="pageTitle">Reserva tu cita</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            softBlue: '#9ec5fe',
+            elegantPurple: '#7e57c2',
+            pastelPink: '#f8bbd0',
+            podGreen: '#10b981',
+            podLight: '#d1fae5',
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-softBlue via-purple-100 to-pastelPink text-slate-800">
+  <main class="max-w-5xl mx-auto p-6 md:p-10">
+
+    <!-- SELECTOR DE NEGOCIO -->
+    <div id="selectorView">
+      <section class="text-center mb-10">
+        <img src="{{ logo_src }}" alt="Logo" class="mx-auto h-24 w-24 rounded-full shadow-xl bg-white p-2" />
+        <h1 class="mt-4 text-4xl font-bold text-elegantPurple">Bienvenido</h1>
+        <p class="mt-2 text-lg">¿A qué negocio deseas acceder?</p>
+      </section>
+
+      <section class="grid md:grid-cols-2 gap-6 max-w-2xl mx-auto">
+        <button onclick="elegirNegocio('salon')"
+          class="bg-white/80 rounded-2xl p-8 shadow-lg backdrop-blur text-center hover:shadow-xl hover:scale-105 transition-all cursor-pointer border-2 border-transparent hover:border-elegantPurple">
+          <div class="text-5xl mb-3">💅</div>
+          <h2 class="text-2xl font-semibold text-elegantPurple">Salón de Belleza</h2>
+          <p class="text-sm text-slate-500 mt-2">Cortes, tintes, manicure y más</p>
+        </button>
+
+        <button onclick="elegirNegocio('podologo')"
+          class="bg-white/80 rounded-2xl p-8 shadow-lg backdrop-blur text-center hover:shadow-xl hover:scale-105 transition-all cursor-pointer border-2 border-transparent hover:border-podGreen">
+          <div class="text-5xl mb-3">🦶</div>
+          <h2 class="text-2xl font-semibold text-podGreen">Podólogo</h2>
+          <p class="text-sm text-slate-500 mt-2">Cuidado especializado de pies</p>
+        </button>
+      </section>
+    </div>
+
+    <!-- FORMULARIOS DE LOGIN/REGISTRO (se muestran después de elegir) -->
+    <div id="authView" class="hidden">
+      <div class="flex items-center gap-3 mb-6">
+        <button onclick="volverSelector()" class="text-sm text-slate-500 hover:text-slate-700">← Cambiar negocio</button>
+        <span id="tenantBadge" class="px-3 py-1 rounded-full text-sm font-medium"></span>
+      </div>
+
+      <section class="text-center mb-6">
+        <img src="{{ logo_src }}" alt="Logo" class="mx-auto h-20 w-20 rounded-full shadow-xl bg-white p-2" />
+        <h1 id="tenantTitle" class="mt-3 text-3xl font-bold"></h1>
+      </section>
+
+      <section class="grid md:grid-cols-2 gap-6">
+        <article class="bg-white/80 rounded-2xl p-6 shadow-lg backdrop-blur">
+          <h2 class="text-2xl font-semibold mb-4" id="registerTitle">Registro</h2>
+          <form id="registerForm" class="space-y-3">
+            <input name="nombre" placeholder="Nombre" class="w-full border rounded-lg p-3" required>
+            <input name="telefono" placeholder="Teléfono" class="w-full border rounded-lg p-3" required>
+            <input name="email" type="email" placeholder="Email" class="w-full border rounded-lg p-3" required>
+            <input name="password" type="password" placeholder="Contraseña" class="w-full border rounded-lg p-3" required>
+            <button id="registerBtn" class="w-full text-white py-3 rounded-lg hover:opacity-90 transition">Crear cuenta</button>
+          </form>
+        </article>
+
+        <article class="bg-white/80 rounded-2xl p-6 shadow-lg backdrop-blur">
+          <h2 class="text-2xl font-semibold mb-4" id="loginTitle">Iniciar sesión</h2>
+          <form id="loginForm" class="space-y-3">
+            <input name="identifier" placeholder="Email o teléfono" class="w-full border rounded-lg p-3" required>
+            <input name="password" type="password" placeholder="Contraseña" class="w-full border rounded-lg p-3" required>
+            <button id="loginBtn" class="w-full text-white py-3 rounded-lg hover:opacity-90 transition">Entrar</button>
+          </form>
+          <p class="text-sm mt-4 text-slate-500">Si eres administrador/a, inicia sesión aquí y te redirigiremos automáticamente.</p>
+        </article>
+      </section>
+      <p id="message" class="mt-6 text-center font-medium"></p>
+    </div>
+
+  </main>
+  <script src="/static/home.js"></script>
+</body>
+</html>

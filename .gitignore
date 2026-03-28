@@ -1,4 +1,19 @@
-node_modules
-.env
-.prisma
-npm-debug.log*
+# Python artifacts
+__pycache__/
+*.py[cod]
+*.pyo
+
+# Virtual envs
+.venv/
+venv/
+
+# OS/editor files
+.DS_Store
+
+# Binary assets excluded from this repository policy
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.webp
+*.ico

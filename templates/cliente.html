@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Panel Cliente</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="min-h-screen bg-gradient-to-br from-blue-100 via-purple-100 to-pink-100">
+  <main class="max-w-6xl mx-auto p-6">
+    <header class="flex flex-wrap justify-between items-center gap-3">
+      <h1 class="text-3xl font-bold text-purple-700">Panel del Cliente</h1>
+      <button id="logoutBtn" class="bg-purple-700 text-white px-4 py-2 rounded-lg">Cerrar sesión</button>
+    </header>
+
+    <section class="mt-5 bg-white rounded-xl p-5 shadow">
+      <h2 class="text-xl font-semibold">Próxima cita</h2>
+      <p id="nextAppointment" class="mt-2 text-slate-700">Cargando...</p>
+      <p class="mt-2 text-sm text-slate-500">Citas del día: <span id="todayCount">0</span></p>
+    </section>
+
+    <section class="grid md:grid-cols-2 gap-6 mt-6">
+      <article class="bg-white rounded-xl p-5 shadow">
+        <h2 class="text-xl font-semibold mb-3">Agendar nueva cita</h2>
+        <form id="appointmentForm" class="space-y-3">
+          <select id="servicio" class="w-full border rounded-lg p-2" required></select>
+          <input id="fecha" type="date" class="w-full border rounded-lg p-2" required>
+          <input id="hora" type="time" class="w-full border rounded-lg p-2" required>
+          <button class="w-full bg-pink-400 text-white py-2 rounded-lg">Reservar</button>
+        </form>
+        <p id="clientMsg" class="mt-3 text-sm"></p>
+      </article>
+
+      <article class="bg-white rounded-xl p-5 shadow">
+        <h2 class="text-xl font-semibold mb-3">Historial de citas</h2>
+        <div class="overflow-auto max-h-[420px]">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="text-left border-b">
+                <th>Servicio</th><th>Fecha</th><th>Hora</th><th>Estado</th>
+              </tr>
+            </thead>
+            <tbody id="appointmentsTable"></tbody>
+          </table>
+        </div>
+      </article>
+    </section>
+  </main>
+  <script src="/static/cliente.js"></script>
+</body>
+</html>
